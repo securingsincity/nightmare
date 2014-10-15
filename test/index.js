@@ -61,16 +61,18 @@ describe('Nightmare', function(){
 
   describe('manipulation', function(){
 
+
     it('should evaluate javascript on the page, with parameters', function(done) {
       new Nightmare()
         .goto('http://yahoo.com')
         .evaluate(function (parameter) {
           return document.title + ' -- ' + parameter;
         }, function (title) {
-          title.should.equal('Yahoo -- testparameter');
+          title.should.equal('Test -- testparameter');
         }, 'testparameter')
         .run(done);
     });
+
 
     it('should type and click', function(done) {
       new Nightmare()
@@ -87,6 +89,50 @@ describe('Nightmare', function(){
         nightmare.should.be.ok;
         done();
       });
+    });
+
+    it('should type', function(done) {
+        nightmare
+        .type('#text', 'github nightmare')
+          .evaluate(function () {
+            return document.querySelector('#text').value;
+          }, function (text) {
+            text.should.equal('github nightmare');
+          })
+          .run(done);
+    });
+    it('should check', function(done){
+        nightmare
+        .check('#check')
+          .evaluate(function () {
+            var test = document.querySelector('#check');
+            return test.checked;
+          }, function (check) {
+            check.should.be.true;
+          })
+        .run(done);
+    });
+    it('should select', function(done){
+        nightmare
+        .select('.dropdown', 2)
+          .evaluate(function () {
+            return document.querySelector('.dropdown').value;
+          }, function (value) {
+            value.should.equal(2);
+          })
+        .run(done);
+    });
+    it('should click', function(done){
+        nightmare
+        .click('#link')
+          .wait()
+          .evaluate(function () {
+            return document.title;
+          }, function (title) {
+            title.should.equal('GitHub · Build software better, together.');
+          })
+        .run(done);
+
     });
 
     it('should take a screenshot', function(done) {
